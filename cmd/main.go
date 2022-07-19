@@ -1,17 +1,16 @@
 package main
 
 import (
-	"fmt"
 	"log"
-	"net"
 	"os"
 
+	"github.com/saagoor/net-cli/cmd/commands"
 	"github.com/urfave/cli"
 )
 
 func main() {
 	app := cli.NewApp()
-	app.Name = "Website Lookup CLI"
+	app.Name = "Net Lookup CLI"
 	app.Usage = "Lets you query IP's, CNAME's, MX Records & Nameservers!"
 
 	myFlags := []cli.Flag{
@@ -22,21 +21,10 @@ func main() {
 	}
 
 	app.Commands = []cli.Command{
-		{
-			Name:  "ns",
-			Usage: "Looks up the nameservers of a particular host.",
-			Flags: myFlags,
-			Action: func(c *cli.Context) error {
-				ns, err := net.LookupNS(c.String("host"))
-				if err != nil {
-					return err
-				}
-				for i := 0; i < len(ns); i++ {
-					fmt.Println(ns[i].Host)
-				}
-				return nil
-			},
-		},
+		commands.NS(myFlags),
+		commands.IP(myFlags),
+		commands.CNAME(myFlags),
+		commands.MX(myFlags),
 	}
 
 	err := app.Run((os.Args))
